@@ -14,6 +14,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		db.execSQL("DROP TABLE IF EXISTS " + UserContract.UserEntry.TABLE_NAME);
 		db.execSQL(UserContract.SQL_CREATE_ENTRIES);
 	}
 

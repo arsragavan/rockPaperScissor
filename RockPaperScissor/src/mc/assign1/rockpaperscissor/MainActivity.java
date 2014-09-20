@@ -13,14 +13,13 @@ import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
-	DBDelegate dbDelegate;
-
+	private DBDelegate dbDelegate;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		dbDelegate = new DBDelegate(getApplicationContext());
 		Button okButton = (Button) findViewById(R.id.ok);
+		dbDelegate = new DBDelegate(getApplicationContext());
 		okButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -35,20 +34,17 @@ public class MainActivity extends ActionBarActivity {
 				} else {
 					dbDelegate.insert(userName.getText().toString(), eMail
 							.getText().toString());
-
-					startGame();
-					/*
-					 * Toast.makeText(getApplicationContext(),
-					 * dbDelegate.getCount() + " record(s) present",
-					 * Toast.LENGTH_SHORT).show();
-					 */
+					startGame(userName.getText().toString(), eMail.getText()
+							.toString());
 				}
 			}
 		});
 	}
 
-	public void startGame() {
+	public void startGame(String userName, String eMail) {
 		Intent gameIntent = new Intent(this, GameActivity.class);
+		gameIntent.putExtra("userName", userName);
+		gameIntent.putExtra("eMail", eMail);
 		startActivity(gameIntent);
 	}
 
@@ -70,11 +66,11 @@ public class MainActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		// TODO Auto-generated method stub
 		return super.onTouchEvent(event);
 	}
-	
+
 }

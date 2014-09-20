@@ -20,14 +20,15 @@ public class UserContract {
 	}
 
 	private static final String TEXT_TYPE = " TEXT";
+	private static final String INTEGER_TYPE = " INTEGER";
 	private static final String COMMA_SEP = ",";
 	public static final String SQL_CREATE_ENTRIES = "CREATE TABLE "
 			+ UserEntry.TABLE_NAME + " (" + UserEntry._ID
 			+ " INTEGER PRIMARY KEY," + UserEntry.COLUMN_USERNAME + TEXT_TYPE
 			+ COMMA_SEP + UserEntry.COLUMN_EMAIL + TEXT_TYPE + COMMA_SEP
-			+ UserEntry.COLUMN_WINS + TEXT_TYPE + COMMA_SEP
-			+ UserEntry.COLUMN_DRAW + TEXT_TYPE + COMMA_SEP
-			+ UserEntry.COLUMN_LOSS + TEXT_TYPE + " )";
+			+ UserEntry.COLUMN_WINS + INTEGER_TYPE + COMMA_SEP
+			+ UserEntry.COLUMN_DRAW + INTEGER_TYPE + COMMA_SEP
+			+ UserEntry.COLUMN_LOSS + INTEGER_TYPE + " )";
 
 	public static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS "
 			+ UserEntry.TABLE_NAME;
