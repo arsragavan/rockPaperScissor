@@ -1,9 +1,11 @@
 package mc.assign1.rockpaperscissor;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,13 +36,22 @@ public class MainActivity extends ActionBarActivity {
 					dbDelegate.insert(userName.getText().toString(), eMail
 							.getText().toString());
 
-					Toast.makeText(getApplicationContext(),
-							dbDelegate.getCount() + " record(s) present",
-							Toast.LENGTH_SHORT).show();
+					startGame();
+					/*
+					 * Toast.makeText(getApplicationContext(),
+					 * dbDelegate.getCount() + " record(s) present",
+					 * Toast.LENGTH_SHORT).show();
+					 */
 				}
 			}
 		});
 	}
+
+	public void startGame() {
+		Intent gameIntent = new Intent(this, GameActivity.class);
+		startActivity(gameIntent);
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -59,4 +70,11 @@ public class MainActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		// TODO Auto-generated method stub
+		return super.onTouchEvent(event);
+	}
+	
 }

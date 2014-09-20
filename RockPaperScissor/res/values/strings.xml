@@ -7,5 +7,7 @@
     <string name="email">E-mail</string>
     <string name="ok">OK</string>
     <string name="hint_username">Type username</string>
+    <string name="title_activity_game">GameActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
