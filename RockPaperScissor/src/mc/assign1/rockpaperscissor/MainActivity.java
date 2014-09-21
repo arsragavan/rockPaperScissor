@@ -9,6 +9,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
@@ -25,26 +27,33 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void onClick(View v) {
 
-				EditText userName = (EditText) findViewById(R.id.inputUsername);
-				EditText eMail = (EditText) findViewById(R.id.inputEmail);
+				EditText userName = (EditText) findViewById(R.id.inputUserName);
+				EditText age = (EditText) findViewById(R.id.inputAge);
+				RadioGroup radioSex = (RadioGroup) findViewById(R.id.radioSex);
+				int selectedSex = radioSex.getCheckedRadioButtonId();
+				RadioButton sex = (RadioButton) findViewById(selectedSex);
+
 				if (userName.getText().length() == 0
-						|| eMail.getText().length() == 0) {
+						|| age.getText().length() == 0) {
 					Toast.makeText(getApplicationContext(),
 							"Field cannot be empty", Toast.LENGTH_SHORT).show();
 				} else {
-					dbDelegate.insert(userName.getText().toString(), eMail
-							.getText().toString());
-					startGame(userName.getText().toString(), eMail.getText()
-							.toString());
+					if (!dbDelegate.isUserExists(userName.getText().toString(),
+							Integer.parseInt(age.getText().toString()), sex
+									.getText().toString())) {
+
+						dbDelegate.insert(userName.getText().toString(),
+								Integer.parseInt(age.getText().toString()), sex
+										.getText().toString());
+					}
+					startGame(userName.getText().toString());
 				}
 			}
 		});
 	}
-
-	public void startGame(String userName, String eMail) {
+	public void startGame(String userName) {
 		Intent gameIntent = new Intent(this, GameActivity.class);
 		gameIntent.putExtra("userName", userName);
-		gameIntent.putExtra("eMail", eMail);
 		startActivity(gameIntent);
 	}
 

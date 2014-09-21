@@ -19,12 +19,26 @@ public class DBDelegate {
 				DATABASE_VERSION);
 	}
 
-	public long insert(String username, String email) {
-		System.out.println("Srini inserting" + username + " " + email);
+	public boolean isUserExists(String userName, int age, String sex) {
+		db = userDbHelper.getReadableDatabase();
+
+		String[] projection = {UserContract.UserEntry.COLUMN_AGE,
+				UserContract.UserEntry.COLUMN_SEX};
+		String selection = UserContract.UserEntry.COLUMN_USERNAME + " LIKE ?";
+		String[] selectionArgs = {userName};
+		Cursor cursor = db.query(UserContract.UserEntry.TABLE_NAME, projection,
+				selection, selectionArgs, null, null, null);
+		if (cursor.getCount() == 1)
+			return true;
+		return false;
+	}
+
+	public long insert(String userName, int age, String sex) {
 		db = userDbHelper.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		values.put(UserContract.UserEntry.COLUMN_USERNAME, username);
-		values.put(UserContract.UserEntry.COLUMN_EMAIL, email);
+		values.put(UserContract.UserEntry.COLUMN_USERNAME, userName);
+		values.put(UserContract.UserEntry.COLUMN_AGE, age);
+		values.put(UserContract.UserEntry.COLUMN_SEX, sex);
 		values.put(UserContract.UserEntry.COLUMN_WINS, 0);
 		values.put(UserContract.UserEntry.COLUMN_DRAW, 0);
 		values.put(UserContract.UserEntry.COLUMN_LOSS, 0);
@@ -44,15 +58,16 @@ public class DBDelegate {
 		String[] selectionArgs = {userName};
 		Cursor cursor = db.query(UserContract.UserEntry.TABLE_NAME, projection,
 				selection, selectionArgs, null, null, null);
-		win.setText(String.valueOf(cursor.getInt(0)));
-		loss.setText(String.valueOf(cursor.getInt(1)));
-		draw.setText(String.valueOf(cursor.getInt(2)));
+		if (cursor.moveToFirst()) {
+			win.setText(String.valueOf(cursor.getInt(0)));
+			loss.setText(String.valueOf(cursor.getInt(1)));
+			draw.setText(String.valueOf(cursor.getInt(2)));
+		}
 
 	}
 
-	public void updateDB(String userName, String eMail, String result) {
+	public void updateDB(String userName, String result) {
 
-		System.out.println("Srini updateDB" + userName + " " + result);
 		String[] projection = {UserContract.UserEntry.COLUMN_WINS,
 				UserContract.UserEntry.COLUMN_LOSS,
 				UserContract.UserEntry.COLUMN_DRAW};
@@ -62,14 +77,10 @@ public class DBDelegate {
 		db = userDbHelper.getReadableDatabase();
 		Cursor cursor = db.query(UserContract.UserEntry.TABLE_NAME, projection,
 				selection, selectionArgs, null, null, null);
-		System.out.println("Srini count=" + cursor.getCount());
-		String colNames[] = cursor.getColumnNames();
-		int i = 0;
-		while (i < colNames.length)
-			System.out.println("Srini colname = " + colNames[i]);
+
 		ContentValues values = new ContentValues();
 
-		if (cursor.getCount() == 1) {
+		if (cursor.getCount() == 1 && cursor.moveToFirst()) {
 
 			if (result.equals("win"))
 				values.put(

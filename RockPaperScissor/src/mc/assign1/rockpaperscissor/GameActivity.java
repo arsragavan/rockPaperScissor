@@ -4,7 +4,6 @@ import java.util.Random;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,11 +18,11 @@ public class GameActivity extends Activity {
 	private static String LOSS = "loss";
 	private static String DRAW = "draw";
 	private String userName;
-	private String eMail;
 	DBDelegate dbDelegate;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
 		dbDelegate = new DBDelegate(getApplicationContext());
@@ -31,13 +30,12 @@ public class GameActivity extends Activity {
 		Button paper = (Button) findViewById(R.id.button2);
 		Button scissor = (Button) findViewById(R.id.button3);
 
-		final TextView win = (TextView) findViewById(R.id.textView2);
-		final TextView loss = (TextView) findViewById(R.id.textView1);
-		final TextView draw = (TextView) findViewById(R.id.textView3);
+		final TextView win = (TextView) findViewById(R.id.win);
+		final TextView loss = (TextView) findViewById(R.id.loss);
+		final TextView draw = (TextView) findViewById(R.id.draw);
+
 		userName = this.getIntent().getExtras().getString("userName");
-		eMail = this.getIntent().getExtras().getString("eMail");
-		// dbDelegate.insert(userName.getText().toString(),
-		// eMail.getText().toString());
+		dbDelegate.getStats(userName, win, loss, draw);
 
 		rock.setOnClickListener(new View.OnClickListener() {
 
@@ -45,6 +43,7 @@ public class GameActivity extends Activity {
 			public void onClick(View arg0) {
 				Toast.makeText(getApplicationContext(), getGameResult(ROCK),
 						Toast.LENGTH_SHORT).show();
+
 				dbDelegate.getStats(userName, win, loss, draw);
 
 			}
@@ -69,11 +68,6 @@ public class GameActivity extends Activity {
 			}
 		});
 
-	}
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		// TODO Auto-generated method stub
-		return super.onTouchEvent(event);
 	}
 
 	public String getGameResult(int input) {
@@ -106,7 +100,7 @@ public class GameActivity extends Activity {
 				break;
 		}
 		if (result != null)
-			dbDelegate.updateDB(this.userName, this.eMail, result);
+			dbDelegate.updateDB(this.userName, result);
 		return result;
 
 	}

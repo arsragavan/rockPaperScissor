@@ -34,7 +34,7 @@
         android:text="Scissor" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/loss"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/button2"
@@ -43,19 +43,19 @@
         android:text="0" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/win"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textView1"
+        android:layout_alignBottom="@+id/loss"
         android:layout_alignLeft="@+id/button1"
         android:text="0" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/draw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView1"
-        android:layout_alignBottom="@+id/textView1"
+        android:layout_alignBaseline="@+id/loss"
+        android:layout_alignBottom="@+id/loss"
         android:layout_alignRight="@+id/button3"
         android:text="0" />
 
