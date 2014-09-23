@@ -77,7 +77,7 @@ public class GameActivity extends Activity {
 	@Override
 	public void onBackPressed() {
 		new AlertDialog.Builder(this)
-				.setMessage("Are you sure you want to exit ?")
+				.setMessage("Are you sure you want to exit?")
 				.setCancelable(false)
 				.setPositiveButton("Yes",
 						new DialogInterface.OnClickListener() {
