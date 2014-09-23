@@ -51,6 +51,12 @@ public class MainActivity extends ActionBarActivity {
 			}
 		});
 	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		finish();
+	}
 	public void startGame(String userName) {
 		Intent gameIntent = new Intent(this, GameActivity.class);
 		gameIntent.putExtra("userName", userName);

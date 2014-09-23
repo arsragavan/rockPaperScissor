@@ -3,6 +3,8 @@ package mc.assign1.rockpaperscissor;
 import java.util.Random;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +27,7 @@ public class GameActivity extends Activity {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
+
 		dbDelegate = new DBDelegate(getApplicationContext());
 		Button rock = (Button) findViewById(R.id.button1);
 		Button paper = (Button) findViewById(R.id.button2);
@@ -35,6 +38,7 @@ public class GameActivity extends Activity {
 		final TextView draw = (TextView) findViewById(R.id.draw);
 
 		userName = this.getIntent().getExtras().getString("userName");
+		this.setTitle(userName);
 		dbDelegate.getStats(userName, win, loss, draw);
 
 		rock.setOnClickListener(new View.OnClickListener() {
@@ -70,8 +74,23 @@ public class GameActivity extends Activity {
 
 	}
 
+	@Override
+	public void onBackPressed() {
+		new AlertDialog.Builder(this)
+				.setMessage("Are you sure you want to exit ?")
+				.setCancelable(false)
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) {
+								GameActivity.this.finish();
+							}
+						}).setNegativeButton("No", null).show();
+	}
+
 	public String getGameResult(int input) {
-		int systemChoice = new Random().nextInt() % 3;
+		int systemChoice = new Random().nextInt(100) % 3;
 		String result = null;
 		switch (input) {
 			case ROCK :

@@ -270,8 +270,8 @@ int id homeAsUp 0x7f050005
 int id icon 0x7f05002a
 int id ifRoom 0x7f05000a
 int id image 0x7f050027
-int id inputAge 0x7f050043
-int id inputUserName 0x7f050044
+int id inputAge 0x7f050044
+int id inputUserName 0x7f050043
 int id listMode 0x7f050001
 int id list_item 0x7f050029
 int id loss 0x7f05003f
