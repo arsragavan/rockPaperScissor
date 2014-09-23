@@ -29,15 +29,21 @@ public class MainActivity extends ActionBarActivity {
 
 				EditText userName = (EditText) findViewById(R.id.inputUserName);
 				EditText age = (EditText) findViewById(R.id.inputAge);
-				RadioGroup radioSex = (RadioGroup) findViewById(R.id.radioSex);
-				int selectedSex = radioSex.getCheckedRadioButtonId();
-				RadioButton sex = (RadioButton) findViewById(selectedSex);
-
 				if (userName.getText().length() == 0
 						|| age.getText().length() == 0) {
 					Toast.makeText(getApplicationContext(),
 							"Field cannot be empty", Toast.LENGTH_SHORT).show();
+				} else if (!validateAge(age.getText().toString())) {
+					Toast.makeText(getApplicationContext(),
+							"Age contains invalid char(s)", Toast.LENGTH_SHORT)
+							.show();
+					age.requestFocus();
+
 				} else {
+					RadioGroup radioSex = (RadioGroup) findViewById(R.id.radioSex);
+					int selectedSex = radioSex.getCheckedRadioButtonId();
+					RadioButton sex = (RadioButton) findViewById(selectedSex);
+
 					if (!dbDelegate.isUserExists(userName.getText().toString(),
 							Integer.parseInt(age.getText().toString()), sex
 									.getText().toString())) {
@@ -48,8 +54,16 @@ public class MainActivity extends ActionBarActivity {
 					}
 					startGame(userName.getText().toString());
 				}
+
 			}
 		});
+	}
+	private boolean validateAge(String age) {
+		for (int i = 0; i < age.length(); i++) {
+			if (!Character.isDigit(age.charAt(i)))
+				return false;
+		}
+		return true;
 	}
 
 	@Override

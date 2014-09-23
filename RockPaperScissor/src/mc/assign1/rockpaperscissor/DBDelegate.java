@@ -11,12 +11,9 @@ public class DBDelegate {
 
 	private UserDbHelper userDbHelper;
 	private SQLiteDatabase db;
-	private static final int DATABASE_VERSION = 1;
-	private static final String DATABASE_NAME = "User.db";
 
 	public DBDelegate(Context context) {
-		userDbHelper = new UserDbHelper(context, DATABASE_NAME, null,
-				DATABASE_VERSION);
+		userDbHelper = UserDbHelper.getInstance(context);
 	}
 
 	public boolean isUserExists(String userName, int age, String sex) {
