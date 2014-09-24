@@ -16,7 +16,20 @@ public class DBDelegate {
 		userDbHelper = UserDbHelper.getInstance(context);
 	}
 
-	public boolean isUserExists(String userName, int age, String sex) {
+	public boolean isUserExists(String userName) {
+		db = userDbHelper.getReadableDatabase();
+
+		String[] projection = {UserContract.UserEntry.COLUMN_USERNAME};
+		String selection = UserContract.UserEntry.COLUMN_USERNAME + " LIKE ?";
+		String[] selectionArgs = {userName};
+		Cursor cursor = db.query(UserContract.UserEntry.TABLE_NAME, projection,
+				selection, selectionArgs, null, null, null);
+		if (cursor.getCount() == 1)
+			return true;
+		return false;
+	}
+
+	public boolean isAgeSexValid(String userName, int age, String sex) {
 		db = userDbHelper.getReadableDatabase();
 
 		String[] projection = {UserContract.UserEntry.COLUMN_AGE,
@@ -25,9 +38,13 @@ public class DBDelegate {
 		String[] selectionArgs = {userName};
 		Cursor cursor = db.query(UserContract.UserEntry.TABLE_NAME, projection,
 				selection, selectionArgs, null, null, null);
-		if (cursor.getCount() == 1)
-			return true;
-		return false;
+		if (cursor.moveToFirst()) {
+			if (cursor.getInt(0) != age)
+				return false;
+			if (!cursor.getString(1).equals(sex))
+				return false;
+		}
+		return true;
 	}
 
 	public long insert(String userName, int age, String sex) {

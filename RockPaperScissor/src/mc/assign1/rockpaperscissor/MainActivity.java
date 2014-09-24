@@ -1,7 +1,10 @@
 package mc.assign1.rockpaperscissor;
 
+import java.io.File;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,10 +19,18 @@ import android.widget.Toast;
 public class MainActivity extends ActionBarActivity {
 
 	private DBDelegate dbDelegate;
+	private EditText userName;
+	private EditText age;
+	private RadioButton sex;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		Toast.makeText(getApplicationContext(),
+				Environment.getExternalStorageDirectory() + File.separator,
+				Toast.LENGTH_SHORT).show();
+
 		Button okButton = (Button) findViewById(R.id.ok);
 		dbDelegate = new DBDelegate(getApplicationContext());
 		okButton.setOnClickListener(new View.OnClickListener() {
@@ -27,8 +38,8 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void onClick(View v) {
 
-				EditText userName = (EditText) findViewById(R.id.inputUserName);
-				EditText age = (EditText) findViewById(R.id.inputAge);
+				userName = (EditText) findViewById(R.id.inputUserName);
+				age = (EditText) findViewById(R.id.inputAge);
 				if (userName.getText().length() == 0
 						|| age.getText().length() == 0) {
 					Toast.makeText(getApplicationContext(),
@@ -42,19 +53,27 @@ public class MainActivity extends ActionBarActivity {
 				} else {
 					RadioGroup radioSex = (RadioGroup) findViewById(R.id.radioSex);
 					int selectedSex = radioSex.getCheckedRadioButtonId();
-					RadioButton sex = (RadioButton) findViewById(selectedSex);
+					sex = (RadioButton) findViewById(selectedSex);
 
-					if (!dbDelegate.isUserExists(userName.getText().toString(),
-							Integer.parseInt(age.getText().toString()), sex
-									.getText().toString())) {
-
+					if (!dbDelegate.isUserExists(userName.getText().toString())) {
 						dbDelegate.insert(userName.getText().toString(),
 								Integer.parseInt(age.getText().toString()), sex
 										.getText().toString());
-					}
-					startGame(userName.getText().toString());
-				}
+						startGame(userName.getText().toString());
+					} else if (dbDelegate.isUserExists(userName.getText()
+							.toString())) {
 
+						if (dbDelegate.isAgeSexValid(userName.getText()
+								.toString(), Integer.parseInt(age.getText()
+								.toString()), sex.getText().toString())) {
+							startGame(userName.getText().toString());
+						} else {
+							Toast.makeText(getApplicationContext(),
+									"Invalid age and/or sex",
+									Toast.LENGTH_SHORT).show();
+						}
+					}
+				}
 			}
 		});
 	}
@@ -69,7 +88,8 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		finish();
+		userName.setText("");
+		age.setText("");
 	}
 	public void startGame(String userName) {
 		Intent gameIntent = new Intent(this, GameActivity.class);
