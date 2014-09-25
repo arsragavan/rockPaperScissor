@@ -1,15 +1,21 @@
 package mc.assign1.rockpaperscissor;
 
+import java.io.File;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 
 public class UserDbHelper extends SQLiteOpenHelper {
 
 	private static UserDbHelper userDbHelper;
-	private static final int DATABASE_VERSION = 1;
-	private static final String DATABASE_NAME = "User.db";
+	static final int DATABASE_VERSION = 1;
+	private static final String DATABASE_NAME = Environment
+			.getExternalStorageDirectory().getPath()
+			+ File.separator
+			+ "rockpaperscissor" + File.separator + "User.db";
 
 	private UserDbHelper(Context context, String name, CursorFactory factory,
 			int version) {

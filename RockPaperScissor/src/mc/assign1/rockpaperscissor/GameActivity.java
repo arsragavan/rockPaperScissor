@@ -4,14 +4,17 @@ import java.util.Random;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
+import android.view.View.OnTouchListener;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class GameActivity extends Activity {
+public class GameActivity extends Activity implements OnTouchListener {
 
 	private static final int ROCK = 0;
 	private static final int PAPER = 1;
@@ -20,58 +23,83 @@ public class GameActivity extends Activity {
 	private static String LOSS = "loss";
 	private static String DRAW = "draw";
 	private String userName;
+	TextView Result;
 	DBDelegate dbDelegate;
+	TextView win;
+	TextView loss;
+	TextView draw;
+	TextView user, opponent;
+	ImageView ivopp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
-
 		dbDelegate = new DBDelegate(getApplicationContext());
-		Button rock = (Button) findViewById(R.id.button1);
-		Button paper = (Button) findViewById(R.id.button2);
-		Button scissor = (Button) findViewById(R.id.button3);
 
-		final TextView win = (TextView) findViewById(R.id.win);
-		final TextView loss = (TextView) findViewById(R.id.loss);
-		final TextView draw = (TextView) findViewById(R.id.draw);
-
+		win = (TextView) findViewById(R.id.textView5);
+		loss = (TextView) findViewById(R.id.textView6);
+		draw = (TextView) findViewById(R.id.textView7);
+		user = (TextView) findViewById(R.id.textView11);
+		opponent = (TextView) findViewById(R.id.textView12);
+		Result = (TextView) findViewById(R.id.textView13);
 		userName = this.getIntent().getExtras().getString("userName");
-		this.setTitle(userName);
+		final ImageView iv = (ImageView) findViewById(R.id.imageView1);
+		ivopp = (ImageView) findViewById(R.id.imageView2);
+		Context cnt = null;
 		dbDelegate.getStats(userName, win, loss, draw);
+		iv.setOnTouchListener(new OnSwipeTouchListener(cnt) {
 
-		rock.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				Toast.makeText(getApplicationContext(), getGameResult(ROCK),
-						Toast.LENGTH_SHORT).show();
-
+			public void onSwipeRight() {
+				iv.setImageResource(R.drawable.paper);
+				getGameResult(PAPER);
 				dbDelegate.getStats(userName, win, loss, draw);
+				Runnable runnable = new Runnable() {
+					@Override
+					public void run() {
+						iv.setImageResource(R.drawable.abc_ab_solid_dark_holo);
+						ivopp.setImageResource(R.drawable.opponent);
+					}
+				};
+				iv.postDelayed(runnable, 2000);
+			}
+			public void onSwipeLeft() {
+				iv.setImageResource(R.drawable.rock);
+				getGameResult(ROCK);
+				dbDelegate.getStats(userName, win, loss, draw);
+				Runnable runnable = new Runnable() {
+					@Override
+					public void run() {
+						iv.setImageResource(R.drawable.abc_ab_solid_dark_holo);
+						ivopp.setImageResource(R.drawable.opponent);
+					}
+				};
+				iv.postDelayed(runnable, 2000);
+			}
+			public void onSwipeBottom() {
+				iv.setImageResource(R.drawable.scissors);
+				getGameResult(SCISSOR);
+				dbDelegate.getStats(userName, win, loss, draw);
+				Runnable runnable = new Runnable() {
+					@Override
+					public void run() {
+						iv.setImageResource(R.drawable.abc_ab_solid_dark_holo);
+						ivopp.setImageResource(R.drawable.opponent);
+					}
+				};
+				iv.postDelayed(runnable, 2000);
+			}
 
+			public boolean onTouch(View v, MotionEvent event) {
+				return gestureDetector.onTouchEvent(event);
 			}
 		});
-		paper.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				Toast.makeText(getApplicationContext(), getGameResult(PAPER),
-						Toast.LENGTH_SHORT).show();
-				dbDelegate.getStats(userName, win, loss, draw);
-
-			}
-		});
-		scissor.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				Toast.makeText(getApplicationContext(), getGameResult(SCISSOR),
-						Toast.LENGTH_SHORT).show();
-				dbDelegate.getStats(userName, win, loss, draw);
-			}
-		});
-
+	}
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		// TODO Auto-generated method stub
+		// System.out.println(event.getPointerCount());
+		return super.onTouchEvent(event);
 	}
 
 	@Override
@@ -90,7 +118,9 @@ public class GameActivity extends Activity {
 	}
 
 	public String getGameResult(int input) {
-		int systemChoice = new Random().nextInt(100) % 3;
+		int systemChoice;
+		Random randomGenerator = new Random();
+		systemChoice = randomGenerator.nextInt(3);
 		String result = null;
 		switch (input) {
 			case ROCK :
@@ -110,17 +140,56 @@ public class GameActivity extends Activity {
 					result = DRAW;
 				break;
 			case SCISSOR :
-				if (systemChoice == ROCK)
+				if (systemChoice == ROCK) {
 					result = LOSS;
-				else if (systemChoice == PAPER)
+				} else if (systemChoice == PAPER) {
 					result = WIN;
-				else
+				} else {
 					result = DRAW;
+				}
 				break;
 		}
-		if (result != null)
+		if (result != null) {
+			displayTextboxes(input, systemChoice, result);
 			dbDelegate.updateDB(this.userName, result);
+		}
 		return result;
 
+	}
+	private void displayTextboxes(int userinput, int oppinput, String result) {
+		// TODO Auto-generated method stub
+		System.out.println("User: " + userinput + " oppinput: " + oppinput
+				+ " Resu: " + result);
+		Result.setText(result);
+		if (userinput == 0) {
+			user.setText("Rock");
+		} else if (userinput == 1) {
+			user.setText("Paper");
+		} else {
+			user.setText("Scissors");
+		}
+		if (oppinput == 0) {
+			opponent.setText("Rock");
+			ivopp.setImageResource(R.drawable.rock);
+		} else if (oppinput == 1) {
+			opponent.setText("Paper");
+			ivopp.setImageResource(R.drawable.paper);
+		} else {
+			opponent.setText("Scissors");
+			ivopp.setImageResource(R.drawable.scissors);
+		}
+		if (result == WIN) {
+			Result.setTextColor(Color.GREEN);
+		} else if (result == LOSS) {
+			Result.setTextColor(Color.RED);
+		} else {
+			Result.setTextColor(Color.BLUE);
+		}
+
+	}
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
